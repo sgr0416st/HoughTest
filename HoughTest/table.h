@@ -5,6 +5,10 @@
 #include <stdio.h>
 #include <math.h>
 
+/// <summary>
+/// 三角関数のテーブルを作成・保持するクラス．高速化のため．
+/// なくてもよい．
+/// </summary>
 class Table
 {
 private:
