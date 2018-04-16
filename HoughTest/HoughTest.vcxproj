@@ -19,7 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="HoughTest.cpp" />
+    <ClCompile Include="data_read.cpp" />
+    <ClCompile Include="hough.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="table.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="data_read.h" />
+    <ClInclude Include="hough.h" />
+    <ClInclude Include="table.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D9F99AA1-B388-44E3-BE0C-2617A690F10B}</ProjectGuid>

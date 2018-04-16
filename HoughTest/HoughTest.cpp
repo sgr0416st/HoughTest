@@ -4,6 +4,8 @@
 #include <math.h>
 #include <vector>
 #include <opencv2/opencv.hpp>
+#include "hough.h"
+
 
 
 int main() {
@@ -36,6 +38,8 @@ int main() {
 
 #endif // 0
 
+
+
 	//自分で設定
 	const int RHO_MAX = sqrt(pow(AREA_WIDTH, 2) + pow(AREA_HEIGHT, 2)); //対角線の長さ：r^2 = x^2 + y^2
 	const int THETA_MAX = 1024; //偶数で
@@ -46,12 +50,6 @@ int main() {
 	float sn[THETA_MAX];
 	//三角関数テーブル（コサイン）
 	float cs[THETA_MAX];
-	//半径計算用斜線長テーブル
-	std::vector < std::vector<short> > diagonal;
-	diagonal.resize(AREA_HEIGHT);		// ()内の数字が要素数になる
-	for (int i = 0; i<AREA_HEIGHT; i++) {
-		diagonal[i].resize(AREA_WIDTH);
-	}
 
 
 	//--------------------------------------初期化・設定--------------------------------------
@@ -61,18 +59,10 @@ int main() {
 		cs[i] = (float)cos(PIK*i);
 	}
 
-#if 0
-	//斜線長テーブルを作成
-	for (int y = 0; y < AREA_HEIGHT; y++)
-		for (int x = 0; x < AREA_WIDTH; x++)
-			diagonal[y][x] = (short)(sqrt(y*y + x*x) + 0.5);
-#endif // 0
-
 	// ---------------------- Hough変換 --------------------------
 
 	int theta, rho, rho_high, rho_low;
-	//hough空間
-	//int hough_spase[THETA_MAX][RHO_MAX];
+
 	std::vector < std::vector<short> > hough_spase;
 	hough_spase.resize(THETA_MAX);		// ()内の数字が要素数になる
 	for (int i = 0; i<THETA_MAX; i++) {
@@ -117,7 +107,7 @@ int main() {
 		}
 	}
 
-	printf("count_max = %d", count_max);
+	printf("count_max = %d\n", count_max);
 
 	printf("finish");
 }
