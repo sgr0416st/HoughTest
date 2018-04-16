@@ -4,6 +4,8 @@
 #include <string>
 #include <fstream>
 #include <opencv2/opencv.hpp>
+#include <windows.h>
+
 
 
 class DataRead

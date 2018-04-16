@@ -22,11 +22,13 @@
     <ClCompile Include="data_read.cpp" />
     <ClCompile Include="hough.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="rect_spase.cpp" />
     <ClCompile Include="table.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="data_read.h" />
     <ClInclude Include="hough.h" />
+    <ClInclude Include="rect_spase.h" />
     <ClInclude Include="table.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

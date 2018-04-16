@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "hough.h"
+#include "rect_spase.h"
 #include "data_read.h"
 
 
@@ -20,8 +20,8 @@ int main()
 	DataRead reader;
 
 	//初期化
-	Mat hough_spase = Mat::zeros(RHO_RANGE, THETA_RESOLUTION, CV_16UC1);
-	Hough hough(THETA_RESOLUTION);
+	cv::Mat hough_spase = cv::Mat::zeros(RHO_RANGE, THETA_RESOLUTION, CV_16UC1);
+	RectSpase r_spase(THETA_RESOLUTION);
 
 	/*------------------------------------------データの読み込み------------------------------------------*/
 	reader.read(N, RECTANGLE);
@@ -29,12 +29,12 @@ int main()
 
 	/*------------------------------------------計算------------------------------------------*/
 	for (int n = 0; n < N; n++) {
-		hough.calclateLineThroughRectangle(RECTANGLE[n], hough_spase, 1024);
+		r_spase.calclateLineThroughRectangle(RECTANGLE[n], hough_spase, 1024);
 	}
 	
-	/*------------------------------------------表示（開発中）------------------------------------------*/
-	printf("answer = %d\n", hough.countMaxValue(hough_spase));
-	hough.disp(hough_spase);
+	/*------------------------------------------表示------------------------------------------*/
+	printf("answer = %d\n", r_spase.countMaxValue(hough_spase));
+	r_spase.disp(hough_spase);
 
 	return 0;
 }
