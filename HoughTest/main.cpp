@@ -9,19 +9,15 @@ int main()
 	//問題による設定
 	const int AREA_WIDTH = 10001;
 	const int AREA_HEIGHT = 10001;
-
 	//自分で設定
-	const int RHO_MAX = sqrt(pow(AREA_WIDTH, 2) + pow(AREA_HEIGHT, 2)); //対角線の長さ：r^2 = x^2 + y^2
-	const int RHO_RANGE = RHO_MAX * 2 + 1;
 	const int THETA_RESOLUTION = 1024; //偶数で
 
 	int N;
 	std::vector<cv::Rect> RECTANGLE;
-	DataRead reader;
-
 	//初期化
-	cv::Mat hough_spase = cv::Mat::zeros(RHO_RANGE, THETA_RESOLUTION, CV_16UC1);
-	RectSpase r_spase(THETA_RESOLUTION);
+	DataRead reader;
+	RectSpase r_spase(AREA_WIDTH, AREA_HEIGHT, THETA_RESOLUTION);
+
 
 	/*------------------------------------------データの読み込み------------------------------------------*/
 	reader.read(N, RECTANGLE);
@@ -29,12 +25,12 @@ int main()
 
 	/*------------------------------------------計算------------------------------------------*/
 	for (int n = 0; n < N; n++) {
-		r_spase.calclateLineThroughRectangle(RECTANGLE[n], hough_spase, 1024);
+		r_spase.calclateLineThroughRectangle(RECTANGLE[n], 1024);
 	}
 	
 	/*------------------------------------------表示------------------------------------------*/
-	printf("answer = %d\n", r_spase.countMaxValue(hough_spase));
-	r_spase.disp(hough_spase);
+	printf("answer = %d\n", r_spase.countMaxOnHoughSpase());
+	r_spase.displayHoughSpase();
 
 	return 0;
 }

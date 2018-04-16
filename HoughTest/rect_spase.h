@@ -6,10 +6,17 @@
 class RectSpase
 {
 private:
+	bool doInit;
 	Hough hough;
+	cv::Mat hough_spase;
+	int rho_max;
+	int rho_range;
 
 public:
-	RectSpase(int theta_res);
+	RectSpase();
+	RectSpase(int width, int height, int theta_res);
+
+	void init(int width, int height, int theta_res);
 
 	/// <summary>
 	/// <para>ある長方形を通る直線の集合をhough変換を用いて計算し，その結果をHough空間上に表現する．</para>
@@ -39,16 +46,14 @@ public:
 	/// <param name="rec">任意の長方形．この長方形を通る直線を計算する</param>
 	/// <param name="hough_spase">結果を格納するHough空間</param>
 	/// <param name="theta_res">角度分解能</param>
-	void calclateLineThroughRectangle(cv::Rect rec, cv::Mat &hough_spase, int theta_res);
+	void calclateLineThroughRectangle(cv::Rect rec, int theta_res);
 
 	/// <summary>
 	/// 与えられた空間で最も大きな数を示す値を抽出し，それを返す．
 	/// </summary>
 	/// <param name="hough_spase"></param>
 	/// <returns></returns>
-	int countMaxValue(cv::Mat &hough_spase);
-
-
+	int countMaxOnHoughSpase();
 
 	/// <summary>
 	/// Hough空間を表示する．
@@ -56,7 +61,7 @@ public:
 	/// </summary>
 	/// <param name="hough_spase"></param>
 	/// <param name="Normalization"></param>
-	void disp(cv::Mat &hough_spase, bool Normalization = true);
+	void displayHoughSpase(bool Normalization = true);
 
 	~RectSpase();
 };
