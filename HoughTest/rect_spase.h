@@ -1,22 +1,35 @@
 #pragma once
 
 #include <opencv2/opencv.hpp>
+#include <Math.h>
+
 #include "hough.h""
 
 class RectSpase
 {
 private:
+	const int scale_threshold = 500;
 	bool doInit;
 	Hough hough;
-	cv::Mat hough_spase;
-	int rho_max;
-	int rho_range;
+	cv::Mat hough_spase, rectangles_spase;
+	int theta_res, rho_max, rho_range, rectspase_maxlength, max_rectangles_rho, max_rectangles_theta_index;
 
 public:
 	RectSpase();
 	RectSpase(int width, int height, int theta_res);
 
 	void init(int width, int height, int theta_res);
+
+	/// <summary>
+	/// 長方形空間に長方形を描画する．
+	/// </summary>
+	/// <param name="">描画する長方形</param>
+	void drawRect(cv::Rect rect, bool scale = true);
+	/// <summary>
+	/// 長方形空間に長方形を描画する．
+	/// </summary>
+	/// <param name=""></param>
+	void drawRect(std::vector<cv::Rect> rects, bool scale = true);
 
 	/// <summary>
 	/// <para>ある長方形を通る直線の集合をhough変換を用いて計算し，その結果をHough空間上に表現する．</para>
@@ -53,7 +66,13 @@ public:
 	/// </summary>
 	/// <param name="hough_spase"></param>
 	/// <returns></returns>
-	int countMaxOnHoughSpase();
+	int searchMaxRectanglesOnLine();
+
+	/// <summary>
+	/// 保持している長方形空間において，最も多くの長方形を通る直線のうち１つを描画する．
+	/// この関数は実行前に必ず searchMaxRectanglesOnLine()　を実行していなければならない．
+	/// </summary>
+	void drawPrepareLine();
 
 	/// <summary>
 	/// Hough空間を表示する．
@@ -61,7 +80,7 @@ public:
 	/// </summary>
 	/// <param name="hough_spase"></param>
 	/// <param name="Normalization"></param>
-	void displayHoughSpase(bool Normalization = true);
+	void disp(bool Normalization = true);
 
 	~RectSpase();
 };

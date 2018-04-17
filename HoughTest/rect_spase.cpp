@@ -16,9 +16,40 @@ RectSpase::RectSpase(int width, int height, int theta_res)
 }
 
 void RectSpase::init(int width, int height, int theta_res) {
-	rho_max = sqrt(pow(width, 2) + pow(height, 2)); //対角線の長さ：r^2 = x^2 + y^2
+	if (width < height) {
+		rectspase_maxlength = height;
+	}
+	else {
+		rectspase_maxlength = width;
+	}
+	RectSpase::theta_res = theta_res;
+	rho_max = (int)sqrt(pow(width, 2) + pow(height, 2)); //対角線の長さ：r^2 = x^2 + y^2
 	rho_range = rho_max * 2 + 1;
+	rectangles_spase = cv::Mat::zeros(height, width, CV_8UC3);
 	hough_spase = cv::Mat::zeros(rho_range, theta_res, CV_16UC1);
+	max_rectangles_theta_index = 0;
+	max_rectangles_rho = 0;
+}
+
+void RectSpase::drawRect(cv::Rect rect, bool scale)
+{
+	if(scale && rectspase_maxlength > scale_threshold)
+		cv::rectangle(rectangles_spase, rect, cv::Scalar(0,255,255), rectspase_maxlength/scale_threshold);
+	else
+		cv::rectangle(rectangles_spase, rect, cv::Scalar(0, 255, 255));
+}
+
+void RectSpase::drawRect(std::vector<cv::Rect> rects, bool scale)
+{
+	if (scale && rectspase_maxlength > scale_threshold) {
+		for (int i = 0; i < rects.size(); i++) {
+		cv::rectangle(rectangles_spase, rects[i], cv::Scalar(0, 255, 255), rectspase_maxlength / scale_threshold);
+		}
+	} else {
+		for (int i = 0; i < rects.size(); i++) {
+			cv::rectangle(rectangles_spase, rects[i], cv::Scalar(0, 255, 255));
+		}
+	}
 }
 
 
@@ -52,12 +83,14 @@ void RectSpase::calclateLineThroughRectangle(cv::Rect rec, int theta_res)
 	}
 }
 
-int RectSpase::countMaxOnHoughSpase()
+int RectSpase::searchMaxRectanglesOnLine()
 {
 	int w, h, count_max = 0;
 	for (w = 0; w < hough_spase.cols; w++) {
 		for (h = 0; h < hough_spase.rows; h++) {
 			if (hough_spase.at<unsigned short>(h, w) > count_max) {
+				max_rectangles_theta_index = w;
+				max_rectangles_rho = h - rho_max;
 				count_max = hough_spase.at<unsigned short>(h, w);
 			}
 		}
@@ -65,18 +98,46 @@ int RectSpase::countMaxOnHoughSpase()
 	return count_max;
 }
 
-void RectSpase::displayHoughSpase(bool Normalization)
+void RectSpase::drawPrepareLine()
 {
+		cv::Point pt1, pt2;
+		double theta, cs_theta, sn_theta, x0, y0;
+		int thickness;
+		
+		theta = max_rectangles_theta_index * M_PI / theta_res;
+		cs_theta = cos(theta);
+		sn_theta = sin(theta);
+		x0 = max_rectangles_rho * cs_theta;
+		y0 = max_rectangles_rho * sn_theta;
 
-	//タイプ cv_u16c1 のみ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	int max = countMaxOnHoughSpase();
+		pt1.x = cv::saturate_cast<double>(x0 + rho_max * (-sn_theta));
+		pt1.y = cv::saturate_cast<double>(y0 + rho_max * (cs_theta));
+		pt2.x = cv::saturate_cast<double>(x0 - rho_max * (-sn_theta));
+		pt2.y = cv::saturate_cast<double>(y0 - rho_max * (cs_theta));
+		
+		//thickness = (rectspase_maxlength) / scale_threshold;
+		thickness = 2;
+		cv::Point diff_x(thickness, 0);
+		cv::Point diff_y(0, thickness);
+		std::vector<cv::Point> points{ pt1, pt1 + diff_x, pt2 + diff_y,pt2 ,pt2 + diff_x ,pt1 + diff_y };
+
+		
+		//cv::line(rectangles_spase,pt1, pt2, cv::Scalar(255, 255, 255), 8, cv::LINE_AA);
+		cv::fillConvexPoly(rectangles_spase, points, cv::Scalar(255, 255, 255), cv::LINE_4);
+}
+
+void RectSpase::disp(bool Normalization)
+{
+	int max = searchMaxRectanglesOnLine();
 	float rate = 65535 / max;
 	if (Normalization) {
 		hough_spase *= rate;
 	}
 	//表示
-	cv::namedWindow("rect image", cv::WINDOW_NORMAL);
-	cv::imshow("rect image", hough_spase);
+	cv::namedWindow("hough spase", cv::WINDOW_NORMAL);
+	cv::imshow("hough spase", hough_spase);
+	cv::namedWindow("rect spase", cv::WINDOW_NORMAL);
+	cv::imshow("rect spase", rectangles_spase);
 	cv::waitKey(0);
 	cv::destroyAllWindows();
 }

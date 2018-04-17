@@ -21,16 +21,18 @@ int main()
 
 	/*------------------------------------------データの読み込み------------------------------------------*/
 	reader.read(N, RECTANGLE);
+	r_spase.drawRect(RECTANGLE);
 	std::cout << "N = " << N << std::endl;
 
 	/*------------------------------------------計算------------------------------------------*/
 	for (int n = 0; n < N; n++) {
-		r_spase.calclateLineThroughRectangle(RECTANGLE[n], 1024);
+		r_spase.calclateLineThroughRectangle(RECTANGLE[n], THETA_RESOLUTION);
 	}
 	
 	/*------------------------------------------表示------------------------------------------*/
-	printf("answer = %d\n", r_spase.countMaxOnHoughSpase());
-	r_spase.displayHoughSpase();
+	printf("answer = %d\n", r_spase.searchMaxRectanglesOnLine());
+	r_spase.drawPrepareLine();
+	r_spase.disp();
 
 	return 0;
 }
