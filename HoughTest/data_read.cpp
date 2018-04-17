@@ -33,6 +33,8 @@ void DataRead::read(int &n, std::vector<cv::Rect> &rect)
 		GetCurrentDirectory(sizeof(dir), dir);
 		fullpass = dir + std::string("\\") + name;
 		std::ifstream ifs(fullpass);
+		//std::ifstream ifs("data.txt");
+
 
 		if (ifs.fail()) {
 			std::cerr << "File do not exist.\n";

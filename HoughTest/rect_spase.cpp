@@ -100,30 +100,60 @@ int RectSpase::searchMaxRectanglesOnLine()
 
 void RectSpase::drawPrepareLine()
 {
-		cv::Point pt1, pt2;
-		double theta, cs_theta, sn_theta, x0, y0;
-		int thickness;
+		cv::Point pts[2];
+		double theta, x_h, y_h, left, right, bottom, top;
+		int thickness, counter;
 		
 		theta = max_rectangles_theta_index * M_PI / theta_res;
-		cs_theta = cos(theta);
-		sn_theta = sin(theta);
-		x0 = max_rectangles_rho * cs_theta;
-		y0 = max_rectangles_rho * sn_theta;
+		x_h = max_rectangles_rho * cos(theta);
+		y_h = max_rectangles_rho * sin(theta);
 
-		pt1.x = cv::saturate_cast<double>(x0 + rho_max * (-sn_theta));
-		pt1.y = cv::saturate_cast<double>(y0 + rho_max * (cs_theta));
-		pt2.x = cv::saturate_cast<double>(x0 - rho_max * (-sn_theta));
-		pt2.y = cv::saturate_cast<double>(y0 - rho_max * (cs_theta));
-		
-		//thickness = (rectspase_maxlength) / scale_threshold;
-		thickness = 2;
-		cv::Point diff_x(thickness, 0);
-		cv::Point diff_y(0, thickness);
-		std::vector<cv::Point> points{ pt1, pt1 + diff_x, pt2 + diff_y,pt2 ,pt2 + diff_x ,pt1 + diff_y };
+		thickness = (rectspase_maxlength) / scale_threshold;
+		counter = 0;
 
+		if (theta == 0 || theta == M_PI) {
+			pts[0].x = cv::saturate_cast<double>(x_h);
+			pts[0].y = cv::saturate_cast<double>(0);
+			pts[1].x = cv::saturate_cast<double>(x_h);
+			pts[1].y = cv::saturate_cast<double>(rectangles_spase.rows-1);
+		}
+		else if (theta == M_PI/2) {
+			pts[0].x = cv::saturate_cast<double>(0.0);
+			pts[0].y = cv::saturate_cast<double>(y_h);
+			pts[1].x = cv::saturate_cast<double>(rectangles_spase.cols - 1);
+			pts[1].y = cv::saturate_cast<double>(y_h);
+		}
+		else {
+			//•K‚¸‚Q“_’Ê‚é‚Í‚¸(Area‚ÌŽl‹÷‚Ìê‡‚à–â‘è‚È‚µ)
+			bottom = x_h + y_h * tan(theta);
+			top = x_h - (rectangles_spase.rows - y_h) * tan(theta);
+			left = y_h + x_h / tan(theta);
+			right = y_h - (rectangles_spase.cols - x_h) / tan(theta);
+
+			if (bottom >= 0 && bottom < rectangles_spase.rows) {
+				pts[counter].x = cv::saturate_cast<double>(bottom);
+				pts[counter].y = cv::saturate_cast<double>(0);
+				counter++;
+			}
+			if (top >= 0 && top < rectangles_spase.rows) {
+				pts[counter].x = cv::saturate_cast<double>(top);
+				pts[counter].y = cv::saturate_cast<double>(rectangles_spase.rows);
+				counter++;
+			}
+			if (left >= 0 && left <= rectangles_spase.cols) {
+				pts[counter].x = cv::saturate_cast<double>(0);
+				pts[counter].y = cv::saturate_cast<double>(left);
+				counter++;
+			}
+			if (right >= 0 && right <= rectangles_spase.cols) {
+				pts[counter].x = cv::saturate_cast<double>(rectangles_spase.cols);
+				pts[counter].y = cv::saturate_cast<double>(right);
+				counter++;
+			}
+		}
 		
-		//cv::line(rectangles_spase,pt1, pt2, cv::Scalar(255, 255, 255), 8, cv::LINE_AA);
-		cv::fillConvexPoly(rectangles_spase, points, cv::Scalar(255, 255, 255), cv::LINE_4);
+		cv::line(rectangles_spase,pts[0], pts[1], cv::Scalar(200, 200, 0), thickness, cv::LINE_AA);
+
 }
 
 void RectSpase::disp(bool Normalization)

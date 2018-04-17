@@ -28,30 +28,13 @@ void Hough::houghTransform_Point(cv::Point p, std::vector<float> &rho, int theta
 		init(theta_res);
 	}
 
-	theta = theta_min;
-	//theta_unit = theta_max / theta_res;
 	theta_unit = M_PI / theta_res;
-
 	theta_index = theta_min / M_PI * theta_res;
 
-	while(theta < theta_max && theta_index < theta_res) {
-		//Hough変換
+	//Hough変換
+	for (theta = theta_min; theta < theta_max && theta_index < theta_res; theta+=theta_unit, theta_index++) {
 		rho[theta_index] = (int)(p.x * table.cos_t(theta_index) + p.y * table.sin_t(theta_index) + 0.5);
-		//hough_spase.at<unsigned char>(rho + rho_range, theta_index)++;
-		//debug用ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
-		//hough_spase.at<char>(rho + (hough_spase.rows-1)/2, theta_index)=255;
-		//printf("rho[%d]:%f\n", theta_index, rho[theta_index]);
-
-		theta += theta_unit;
-		theta_index++;
-		
 	}
-
-}
-
-Table Hough::getTable()
-{
-	return table;
 }
 
 Hough::~Hough()

@@ -39,11 +39,6 @@ public:
 	/// <param name="theta_max">角度の上限値．デフォルトはπ</param>
 	void houghTransform_Point(cv::Point p, std::vector<float> &rho, int theta_res, float theta_min=0,float theta_max=M_PI);
 
-	/// <summary>
-	/// 使用したテーブルを返す．
-	/// </summary>
-	/// <returns></returns>
-	Table getTable();
 	~Hough();
 };
 

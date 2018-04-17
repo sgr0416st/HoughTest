@@ -32,7 +32,7 @@ public:
 	void drawRect(std::vector<cv::Rect> rects, bool scale = true);
 
 	/// <summary>
-	/// <para>ある長方形を通る直線の集合をhough変換を用いて計算し，その結果をHough空間上に表現する．</para>
+	/// <para>ある長方形を通る直線の集合をhough変換を用いて計算し，その結果をHough空間上に記憶する．</para>
 	/// <para>ユークリッド空間上に存在する長方形に対して，頂点を原点に近い点を基準として時計回りにv1,v2,v3,v4とすると，</para>
 	/// <para> </para>
 	/// <para>(i) 0 &lt;θ&lt;π/2 を満たす∀θにおいて，</para>
@@ -54,18 +54,16 @@ public:
 	/// <para> </para>
 	/// <para>すなわち，この関数は長方形を通る直線の集合を</para>
 	/// <para>角度分解能theta_res（距離分解能はfloat型単精度固定）で計算し,</para>
-	/// <para>該当領域をHough空間上でインクリメントして返す．</para>
+	/// <para>該当領域をHough空間上でインクリメントする．</para>
 	/// </summary>
 	/// <param name="rec">任意の長方形．この長方形を通る直線を計算する</param>
-	/// <param name="hough_spase">結果を格納するHough空間</param>
 	/// <param name="theta_res">角度分解能</param>
 	void calclateLineThroughRectangle(cv::Rect rec, int theta_res);
 
 	/// <summary>
-	/// 与えられた空間で最も大きな数を示す値を抽出し，それを返す．
+	/// 与えられた空間で最も大きな数を示す座標を記憶し，その値を返す．
 	/// </summary>
-	/// <param name="hough_spase"></param>
-	/// <returns></returns>
+	/// <returns>最も大きな値</returns>
 	int searchMaxRectanglesOnLine();
 
 	/// <summary>
@@ -78,8 +76,7 @@ public:
 	/// Hough空間を表示する．
 	/// デフォルトでは最も大きい所が正規化される．
 	/// </summary>
-	/// <param name="hough_spase"></param>
-	/// <param name="Normalization"></param>
+	/// <param name="Normalization">空間の最大値をMAXに正規化する場合はtrue,それ以外はfalse．</param>
 	void disp(bool Normalization = true);
 
 	~RectSpase();
